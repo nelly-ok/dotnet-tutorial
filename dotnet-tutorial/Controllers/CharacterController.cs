@@ -1,7 +1,11 @@
-﻿using dotnet_tutorial.Models;
+﻿using dotnet_tutorial.Dtos.Character;
+using dotnet_tutorial.Models;
+using dotnet_tutorial.Services;
+using dotnet_tutorial.Services.CharacterService;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace dotnet_tutorial.Controllers
 {
@@ -22,18 +26,42 @@ namespace dotnet_tutorial.Controllers
         [HttpGet("GetAll")]
         //[HttpGet]
         ///[Route("GetAll")]
-        public ActionResult<List<Character>> Get() { //IActionResult specific http status code together with results
-            return Ok(_characterService.GetAllCharacters());//return NotFound, //BadRequest
+        public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Get() { //IActionResult specific http status code together with results
+            return Ok(await _characterService.GetAllCharacters());//return NotFound, //BadRequest
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Character> GetSingle(int id) {
-            return Ok(_characterService.GetCharacterById(id)); //First = error if not found. First or Defual t= null if not found
+        public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> GetSingle(int id) {
+            return Ok(await _characterService.GetCharacterById(id)); //First = error if not found. First or Defual t= null if not found
         }
 
         [HttpPost]
-        public ActionResult<List<Character>> AddCharacter(Character newCharacter){
-            return Ok(_characterService.AddCharacter(newCharacter));
+        public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> AddCharacter(AddCharacterDto newCharacter){
+            return Ok(await _characterService.AddCharacter(newCharacter));
         }
+
+        [HttpPut]
+        public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> UpdateCharacter(UpdateCharacterDto updatedCharacter)
+        {
+            var res = await _characterService.UpdateCharacter(updatedCharacter);
+            if (res.Data == null)
+            {
+                return NotFound(res);
+            }
+            return Ok(res);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Delete(int id)
+        {
+            var res = await _characterService.DeleteCharacter(id);
+            if (res.Data == null)
+            {
+                return NotFound(res);
+            }
+            return Ok(res);
+        }
+
+
     }
 }
