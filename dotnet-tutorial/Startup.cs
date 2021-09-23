@@ -15,6 +15,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
 using dotnet_tutorial.Services.CharacterService;
+using dotnet_tutorial.Data;
 
 namespace dotnet_tutorial
 {
@@ -30,11 +31,11 @@ namespace dotnet_tutorial
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            services.AddDbContext<DataContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
-
-            services.AddDbContext<TodoContext>(opt =>
-        opt.UseInMemoryDatabase("TodoList"));
+        //    services.AddDbContext<TodoContext>(opt =>
+        //opt.UseInMemoryDatabase("TodoList"));
             services.AddControllers();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
